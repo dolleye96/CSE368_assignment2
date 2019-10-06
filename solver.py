@@ -17,12 +17,13 @@ class Solver:
             queue = []
             for i in csp.variables:  # use get queue somewhere
                 for j in csp.neighbors[i]:
-                    queue.append((i, j))  # put all arcs in the queue in both directions
+                    # put all arcs in the queue in both directions
+                    queue.append((i, j))
 
         while queue:
             (i, j) = queue.pop()  # select and delete an arc from the quque
             if self.revise(csp, i, j, removals):
-                if len(csp.curr_domains[i]) == 0:     #possible mistake -> sike
+                if len(csp.curr_domains[i]) == 0:  # possible mistake -> sike
                     return False
                 for k in csp.neighbors[i]:
                     if k != j:
@@ -38,7 +39,7 @@ class Solver:
         otherwise, return False
         '''
         ret = False
-        for i in csp.curr_domains[Xi]:       #domain of Xi
+        for i in csp.curr_domains[Xi]:  # domain of Xi
             if all(not csp.constraints(Xi, i, Xj, j) for j in csp.curr_domains[Xj]):
                 csp.prune(Xi, i, removals)
                 ret = True
@@ -54,29 +55,29 @@ class Solver:
     # sangwoo
     def backtrack(self, assignment, csp):
         ''' YOUR CODE HERE '''
-        #None of this works, needed something for it for autograder
-        '''if len(assignment) == len(csp.variables):
+
+        if len(assignment) == 81:
             return assignment
 
         var = self.select_unassigned_variable(assignment, csp)
 
         for value in self.order_domain_values(var, assignment, csp):
-            if 0 is csp.nconflicts(var, value, assignment):
-                csp.assign(var, value, assignment)
+            # Is consistent == no conflicts?
+            if csp.nconflicts(var, value, assignment) == 0:
+                assignment[var] = value
+                # Suppose, assigning var:value, these values are no longer taken by var.
                 suppose = csp.suppose(var, value)
                 inference = self.get_queue(csp, var)
-                if inference is None:
+
+                if inference != None:
                     result = self.backtrack(assignment, csp)
-                    if not (result is None):
+                    if result != None:
                         return result
+
                 csp.restore(suppose)
             csp.unassign(var, assignment)
-            return None
 
-        res = self.backtracking_search(csp)
-        return res'''
-
-        raise NotImplementedError
+        return None
 
     # START: DEFINED ALREADY
     def select_unassigned_variable(self, assignment, csp):
@@ -85,7 +86,8 @@ class Solver:
             if i not in assignment:
                 unassigned.append(i)
 
-        sorted_unassigned = sorted(unassigned, key=lambda var: len(csp.domains[var]))
+        sorted_unassigned = sorted(
+            unassigned, key=lambda var: len(csp.domains[var]))
         return sorted_unassigned[0]
 
     def order_domain_values(self, var, assignment, csp):
@@ -110,7 +112,8 @@ if __name__ == '__main__':
     '''
 
     # board = sudoku.Sudoku('12.456789.........12.45678912.45678912.45678912.45678912.45678912.45678912.456789')
-    board = sudoku.Sudoku('..5...1.3....2.........176.7.49....1...8.4...3....7..8.3.5....2....9....4.6...9..')
+    board = sudoku.Sudoku(
+        '..5...1.3....2.........176.7.49....1...8.4...3....7..8.3.5....2....9....4.6...9..')
     # Accessing the board as a csp, i.e. display the variable and domains
     # See the extra document for exapmles of how to use the  CSP class
 
@@ -134,7 +137,8 @@ if __name__ == '__main__':
     # #remove the possible value '8' form domain 3
     # #not the differences int key for the first dictionary and the string keys
 
-    board.prune(3, '8', removals)  # This line may not work if the domain for 3 does not contain "8"
+    # This line may not work if the domain for 3 does not contain "8"
+    board.prune(3, '8', removals)
 
     print("Domain for 3: " + str(board.curr_domains[3]))
     print("Removal List: " + str(removals))
@@ -162,7 +166,8 @@ if __name__ == '__main__':
     # check for a constraint, need to plug in a specific var,val, var val combination
     # since 0 and 1 and neighbors, they should be different values
     print(board.constraints(0, '0', 1, '0'))  # should be false
-    print(board.constraints(0, '0', 1, '1'))  # should be true i.e. not a constraint
+    # should be true i.e. not a constraint
+    print(board.constraints(0, '0', 1, '1'))
 
     '''to check your implementatios:'''
 
