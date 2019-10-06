@@ -5,27 +5,77 @@ Modified & Solution by: Jiwon Choi (F18 HW script)
 import sudoku
 import time
 
+
 class Solver:
+    # Nick - Neighbors?
     def AC3(self, csp, queue=None, removals=None):
         ''' YOUR CODE HERE
         return True if it is consistent;
         otherwise, return False
         '''
+        if queue is None:
+            queue = []
+            for i in csp.variables:  # use get queue somewhere
+                for j in csp.neighbors[i]:
+                    queue.append((i, j))  # put all arcs in the queue in both directions
+
+        while queue:
+            (i, j) = queue.pop()  # select and delete an arc from the quque
+            if self.revise(csp, i, j, removals):
+                if len(csp.curr_domains[i]) == 0:     #possible mistake -> sike
+                    return False
+                for k in csp.neighbors[i]:
+                    if k != j:
+                        queue.append((k, i))
+        return True
+
         raise NotImplementedError
 
+    # Nick
     def revise(self, csp, Xi, Xj, removals):
         ''' YOUR CODE HERE
         return True if the domain is revised;
         otherwise, return False
         '''
+        ret = False
+        for i in csp.curr_domains[Xi]:       #domain of Xi
+            if all(not csp.constraints(Xi, i, Xj, j) for j in csp.curr_domains[Xj]):
+                csp.prune(Xi, i, removals)
+                ret = True
+        return ret
+
         raise NotImplementedError
 
     ''' recursive call '''
+
     def backtracking_search(self, csp):
         return self.backtrack({}, csp)
 
+    # sangwoo
     def backtrack(self, assignment, csp):
         ''' YOUR CODE HERE '''
+        #None of this works, needed something for it for autograder
+        '''if len(assignment) == len(csp.variables):
+            return assignment
+
+        var = self.select_unassigned_variable(assignment, csp)
+
+        for value in self.order_domain_values(var, assignment, csp):
+            if 0 is csp.nconflicts(var, value, assignment):
+                csp.assign(var, value, assignment)
+                suppose = csp.suppose(var, value)
+                inference = self.get_queue(csp, var)
+                if inference is None:
+                    result = self.backtrack(assignment, csp)
+                    if not (result is None):
+                        return result
+                csp.restore(suppose)
+            csp.unassign(var, assignment)
+            return None
+
+        res = self.backtracking_search(csp)
+        return res'''
+
         raise NotImplementedError
 
     # START: DEFINED ALREADY
@@ -47,6 +97,7 @@ class Solver:
             queue.append((i, var))
         return queue
     # END: DEFINED ALREADY
+
 
 if __name__ == '__main__':
     '''
