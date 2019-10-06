@@ -55,27 +55,6 @@ class Solver:
     # sangwoo
     def backtrack(self, assignment, csp):
         ''' YOUR CODE HERE '''
-        # None of this works, needed something for it for autograder
-        '''if len(assignment) == len(csp.variables):
-            return assignment
-
-        var = self.select_unassigned_variable(assignment, csp)
-
-        for value in self.order_domain_values(var, assignment, csp):
-            if 0 is csp.nconflicts(var, value, assignment):
-                csp.assign(var, value, assignment)
-                suppose = csp.suppose(var, value)
-                inference = self.get_queue(csp, var)
-                if inference is None:
-                    result = self.backtrack(assignment, csp)
-                    if not (result is None):
-                        return result
-                csp.restore(suppose)
-            csp.unassign(var, assignment)
-            return None
-
-        res = self.backtracking_search(csp)
-        return res'''
 
         if len(assignment) == 81:
             return assignment
